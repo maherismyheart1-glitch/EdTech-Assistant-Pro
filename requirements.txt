@@ -1,0 +1,9 @@
+fastapi==0.111.0
+uvicorn==0.30.1
+python-multipart==0.0.9
+pydantic==2.7.1
+groq==0.11.0
+PyMuPDF==1.24.5
+pinecone==3.2.2
+google-genai==0.7.0
+httpx==0.27.0

@@ -1,0 +1,31 @@
+INFO:     127.0.0.1:65494 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65494 - "GET /static/University_logo.png.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50436 - "GET /static/college_logo.png.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50436 - "GET /static/dept_logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50436 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50436 - "GET /static/sw.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50436 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65494 - "GET /static/manifest.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59709 - "GET /static/manifest.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59710 - "POST /chat/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59711 - "POST /grade/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59712 - "POST /exam/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59718 - "POST /chat/stream HTTP/1.1" 422 Unprocessable Content
+INFO:     127.0.0.1:59719 - "POST /exam/stream HTTP/1.1" 422 Unprocessable Content
+INFO:     127.0.0.1:59720 - "POST /grade/stream HTTP/1.1" 422 Unprocessable Content
+INFO:     127.0.0.1:59723 - "GET /static/manifest.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59731 - "POST /chat/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59732 - "POST /exam/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59731 - "POST /grade/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50223 - "POST /chat/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65310 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65310 - "GET /static/University_logo.png.jpg HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52311 - "GET /static/college_logo.png.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52311 - "GET /static/dept_logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52311 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63506 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63506 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64873 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64873 - "POST /chat/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65275 - "GET /history/d3ab2000-4d03-4016-86ef-17c8ca9d1e97 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52997 - "POST /admin HTTP/1.1" 403 Forbidden
