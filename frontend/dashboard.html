@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0f1a">
+<title>El Dashboard — المعيد الذكي</title>
+<link rel="icon" href="/static/college_logo.png.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
+
+:root {
+  --bg:       #0b0f1a;
+  --sidebar:  #0f1623;
+  --card:     #141c2e;
+  --card2:    #192236;
+  --accent:   #3b82f6;
+  --accent2:  #6366f1;
+  --teal:     #14b8a6;
+  --green:    #22c55e;
+  --amber:    #f59e0b;
+  --red:      #ef4444;
+  --text:     #e2e8f0;
+  --muted:    #64748b;
+  --border:   #1e2d42;
+  --border2:  #243447;
+  --radius:   14px;
+  --shadow:   0 8px 32px rgba(0,0,0,.5);
+  --glow:     0 0 20px rgba(59,130,246,.2);
+  --ease:     cubic-bezier(.22,1,.36,1);
+}
+
+html { min-height: 100%; }
+body {
+  font-family: 'Cairo', 'Segoe UI', sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; text-rendering: optimizeLegibility;
+}
+button { font-family: inherit; }
+
+/* ─────────── Login ─────────── */
+#login-screen {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
+  background: radial-gradient(1100px 700px at 15% -10%, rgba(99,102,241,.14), transparent 60%),
+              radial-gradient(900px 600px at 100% 110%, rgba(20,184,166,.12), transparent 55%),
+              var(--bg);
+}
+.login-card {
+  width: 100%; max-width: 380px; padding: 28px 24px;
+  background: var(--card); border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow);
+  animation: rise .45s var(--ease) both;
+}
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.login-logo { display: block; width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 50%;
+  background: #fff; object-fit: cover; border: 2px solid var(--accent); box-shadow: var(--glow); }
+.login-card h1 { font-size: 1.25rem; font-weight: 900; text-align: center; margin-bottom: 4px; }
+.login-card .sub { text-align: center; color: var(--muted); font-size: .8rem; margin-bottom: 20px; }
+label { display: block; font-size: .78rem; color: var(--muted); margin-bottom: 5px; font-weight: 600; }
+input[type=password] {
+  width: 100%; background: var(--bg); border: 1px solid var(--border2); border-radius: 9px; color: var(--text);
+  font-size: .9rem; padding: 10px 12px; font-family: inherit; direction: rtl; outline: none; transition: border-color .2s;
+}
+input[type=password]:focus { border-color: var(--accent); }
+.primary-btn {
+  padding: 10px 26px; background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none; border-radius: 10px; color: #fff; font-size: .88rem; font-weight: 700;
+  cursor: pointer; transition: all .2s; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+}
+.primary-btn:hover { opacity: .92; transform: translateY(-1px); box-shadow: var(--glow); }
+.primary-btn:disabled { background: var(--border); cursor: not-allowed; transform: none; box-shadow: none; }
+.login-card .primary-btn { width: 100%; margin-top: 14px; }
+.error-box {
+  background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.25); color: var(--red);
+  border-radius: 10px; padding: 9px 12px; font-size: .8rem; margin-top: 12px;
+}
+
+/* ─────────── App shell ─────────── */
+.topbar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: 12px; padding: 10px 16px;
+  background: rgba(15,22,35,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border);
+}
+.topbar img { width: 36px; height: 36px; border-radius: 50%; background: #fff; object-fit: cover; border: 1px solid var(--accent); }
+.topbar .ttl { flex: 1; min-width: 0; }
+.topbar .ttl strong { display: block; font-size: .95rem; font-weight: 800; }
+.topbar .ttl span { display: block; font-size: .68rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ghost-btn {
+  background: var(--card2); color: var(--text); border: 1px solid var(--border2); border-radius: 9px;
+  padding: 7px 12px; font-size: .78rem; font-weight: 700; cursor: pointer; transition: border-color .15s, color .15s;
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+}
+.ghost-btn:hover:not(:disabled) { border-color: var(--accent); color: #93c5fd; }
+.ghost-btn:disabled { opacity: .5; cursor: progress; }
+
+.tabs {
+  display: flex; gap: 6px; padding: 10px 16px 0; overflow-x: auto; border-bottom: 1px solid var(--border);
+  background: var(--sidebar); scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex: 0 0 auto; background: transparent; border: none; color: var(--muted); font-size: .84rem; font-weight: 700;
+  padding: 9px 14px; border-radius: 10px 10px 0 0; cursor: pointer; border-bottom: 2px solid transparent;
+  transition: color .15s, background .15s;
+}
+.tab-btn:hover { color: var(--text); background: rgba(59,130,246,.06); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); background: rgba(59,130,246,.1); }
+
+.content { max-width: 1100px; margin: 0 auto; padding: 18px 16px 48px; }
+.toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.toolbar .grow { flex: 1; }
+.note { font-size: .75rem; color: var(--green); }
+
+.sec-title { font-size: .9rem; color: var(--accent); margin: 22px 0 10px; font-weight: 800; }
+.sec-title:first-of-type { margin-top: 4px; }
+
+.status { text-align: center; padding: 28px 10px; color: var(--muted); font-size: .85rem; }
+.spinner {
+  display: inline-block; width: 18px; height: 18px; border: 2px solid var(--border2); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; margin-inline-end: 8px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.alert-error { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.25); color: var(--red); border-radius: 10px; padding: 10px 14px; font-size: .82rem; margin-bottom: 10px; }
+.alert-error button { margin-inline-start: 10px; }
+.empty { background: var(--card2); border: 1px dashed var(--border2); color: var(--muted); border-radius: 12px; padding: 22px; text-align: center; font-size: .84rem; }
+
+/* stat cards */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 18px; }
+.stat-card { background: var(--card2); border: 1px solid var(--border2); border-radius: 12px; padding: 14px 16px; transition: border-color .2s; }
+.stat-card:hover { border-color: var(--accent); }
+.stat-card .val { font-size: 1.7rem; font-weight: 900; color: var(--accent); line-height: 1.3; }
+.stat-card .val.small { font-size: 1.05rem; padding-top: 6px; }
+.stat-card .lbl { font-size: .72rem; color: var(--muted); margin-top: 4px; }
+
+/* charts */
+.chart-box { background: var(--card2); border: 1px solid var(--border2); border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+.chart-box h4 { font-size: .8rem; color: var(--muted); font-weight: 700; margin-bottom: 12px; }
+.chart-row { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; }
+.chart-holder { position: relative; height: 220px; }
+@media (max-width: 720px) { .chart-row { grid-template-columns: 1fr; } }
+
+/* tables */
+.table-wrap { overflow-x: auto; border: 1px solid var(--border2); border-radius: 12px; background: var(--card); margin-bottom: 12px; }
+.data-table { width: 100%; border-collapse: collapse; font-size: .8rem; min-width: 480px; }
+.data-table th {
+  background: var(--card2); color: var(--muted); font-weight: 700; text-align: start;
+  padding: 10px 12px; border-bottom: 1px solid var(--border2); white-space: nowrap;
+}
+.data-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tbody tr:hover td { background: var(--card2); }
+.data-table td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.data-table td.ts  { white-space: nowrap; color: var(--muted); font-variant-numeric: tabular-nums; }
+.clamp { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; max-width: 460px; word-break: break-word; line-height: 1.6; }
+.badge { display: inline-block; font-size: .7rem; font-weight: 700; padding: 2px 9px; border-radius: 20px; white-space: nowrap; }
+.badge.cat-أكاديمي { background: rgba(99,102,241,.15); color: #a5b4fc; }
+.badge.cat-إداري   { background: rgba(245,158,11,.15);  color: var(--amber); }
+.badge.cat-تقني    { background: rgba(20,184,166,.15);  color: var(--teal); }
+.badge.cat-عام     { background: rgba(100,116,139,.15); color: var(--muted); }
+.badge.pri-عالية   { background: rgba(239,68,68,.15);   color: var(--red); }
+.badge.pri-متوسطة  { background: rgba(245,158,11,.15);  color: var(--amber); }
+.badge.good { background: rgba(34,197,94,.15); color: var(--green); }
+.badge.bad  { background: rgba(239,68,68,.15); color: var(--red); }
+.dim { color: var(--muted); }
+
+@media (max-width: 640px) {
+  .topbar { padding: 8px 12px; }
+  .content { padding: 14px 12px 40px; }
+  .ghost-btn .btn-txt { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═════════════ شاشة الدخول بكلمة السر ═════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <img class="login-logo" src="/static/college_logo.png.png" onerror="this.style.display='none'" alt="">
+    <h1>📊 El Dashboard</h1>
+    <div class="sub">المعيد الذكي — للإدارة فقط</div>
+    <label for="secret-input">كلمة السر</label>
+    <input type="password" id="secret-input" autocomplete="current-password" placeholder="أدخل كلمة سر الإدارة..."
+           onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="primary-btn" id="login-btn" onclick="doLogin()">🔓 دخول</button>
+    <div class="error-box" id="login-error" hidden></div>
+  </div>
+</div>
+
+<!-- ═════════════ التطبيق ═════════════ -->
+<div id="app" hidden>
+  <header class="topbar">
+    <img src="/static/college_logo.png.png" onerror="this.style.display='none'" alt="">
+    <div class="ttl">
+      <strong>El Dashboard</strong>
+      <span>المعيد الذكي — قسم تكنولوجيا التعليم، جامعة الزقازيق</span>
+    </div>
+    <button class="ghost-btn" id="refresh-btn" onclick="refresh()" title="تحديث">🔄 <span class="btn-txt">تحديث</span></button>
+    <button class="ghost-btn" id="lock-btn" onclick="lock()" title="قفل">🔒 <span class="btn-txt">قفل</span></button>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab-btn active" role="tab" aria-selected="true"  data-tab="overview"   onclick="showTab('overview')">📈 نظرة عامة</button>
+    <button class="tab-btn"        role="tab" aria-selected="false" data-tab="topics"    onclick="showTab('topics')">📚 الموضوعات والأداء</button>
+    <button class="tab-btn"        role="tab" aria-selected="false" data-tab="users"      onclick="showTab('users')">👥 المستخدمون</button>
+    <button class="tab-btn"        role="tab" aria-selected="false" data-tab="questions"  onclick="showTab('questions')">❓ الأسئلة</button>
+    <button class="tab-btn"        role="tab" aria-selected="false" data-tab="complaints" onclick="showTab('complaints')">📢 الشكاوى</button>
+    <button class="tab-btn"        role="tab" aria-selected="false" data-tab="feedback"   onclick="showTab('feedback')">⭐ التقييمات</button>
+  </nav>
+
+  <main class="content">
+    <div class="toolbar">
+      <span class="grow"></span>
+      <span class="note" id="toolbar-note" hidden></span>
+      <button class="ghost-btn" id="csv-btn" onclick="exportCsv()" hidden>⬇️ <span class="btn-txt">تصدير CSV</span></button>
+    </div>
+
+    <section class="tab-pane" id="tab-overview" role="tabpanel">
+      <div class="status" id="status-overview" hidden></div>
+      <div class="stat-grid" id="stat-grid"></div>
+      <div class="chart-row">
+        <div class="chart-box">
+          <h4>📈 أسئلة الطلاب يوميًا (آخر 14 يوم)</h4>
+          <div class="chart-holder"><div id="chart-trend"></div></div>
+        </div>
+        <div class="chart-box">
+          <h4>⭐ رضا الطلاب عن الإجابات</h4>
+          <div class="chart-holder"><div id="chart-feedback"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-pane" id="tab-topics" role="tabpanel" hidden>
+      <div class="status" id="status-topics" hidden></div>
+      <div id="topics-body"></div>
+    </section>
+
+    <section class="tab-pane" id="tab-users" role="tabpanel" hidden>
+      <div class="status" id="status-users" hidden></div>
+      <div id="users-body"></div>
+    </section>
+
+    <section class="tab-pane" id="tab-questions" role="tabpanel" hidden>
+      <div class="status" id="status-questions" hidden></div>
+      <div id="questions-body"></div>
+    </section>
+
+    <section class="tab-pane" id="tab-complaints" role="tabpanel" hidden>
+      <div class="status" id="status-complaints" hidden></div>
+      <div id="complaints-body"></div>
+    </section>
+
+    <section class="tab-pane" id="tab-feedback" role="tabpanel" hidden>
+      <div class="status" id="status-feedback" hidden></div>
+      <div id="feedback-body"></div>
+    </section>
+  </main>
+</div>
+
+<script>
+// كل المتغيرات الـ top-level بـ var (مش let) — من غير temporal dead zone.
+var secret = '';          // كلمة السر في الذاكرة بس (مش بتتخزّن في أي storage) — بتتبعت مع كل طلب
+var currentTab = 'overview';
+var loaded = {};          // tab -> true بعد أول تحميل ناجح
+var noteTimer = null;
+
+function $(id) { return document.getElementById(id); }
+
+// بناء عناصر بالـ DOM API (textContent) — مفيش innerHTML لأي نص جاي من المستخدمين
+function el(tag, props, kids) {
+  var n = document.createElement(tag);
+  Object.keys(props || {}).forEach(function (k) {
+    if (k === 'class') n.className = props[k];
+    else if (k === 'text') n.textContent = props[k];
+    else n.setAttribute(k, props[k]);
+  });
+  (kids || []).forEach(function (c) {
+    if (c == null) return;
+    n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+  });
+  return n;
+}
+function fmtNum(n) { return Number(n || 0).toLocaleString('en-US'); }
+function fmtTs(ts) { return ts ? String(ts).slice(0, 16).replace('T', ' ') : '—'; }
+
+/* ───────────────────────── API ───────────────────────── */
+async function api(endpoint) {
+  var r = await fetch(endpoint, {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({secret: secret})
+  });
+  var d = null;
+  try { d = await r.json(); } catch (e) { d = null; }
+  if (!r.ok) {
+    var err = new Error(d && typeof d.detail === 'string' ? d.detail : ('خطأ ' + r.status));
+    err.status = r.status;
+    throw err;
+  }
+  return d;
+}
+function errMsg(e) { return e && e.status ? e.message : 'فشل الاتصال بالسيرفر'; }
+
+/* ───────────────────────── الدخول والقفل ───────────────────────── */
+function showLoginError(msg) { var b = $('login-error'); b.textContent = msg; b.hidden = false; }
+
+async function doLogin() {
+  var btn = $('login-btn');
+  if (btn.disabled) return;
+  var pass = $('secret-input').value;
+  $('login-error').hidden = true;
+  if (!pass) { showLoginError('اكتب كلمة السر'); return; }
+  btn.disabled = true; btn.textContent = 'جاري التحقق...';
+  secret = pass;
+  try {
+    var d = await api('/dash/summary');
+    enter(d);
+  } catch (e) {
+    secret = '';
+    showLoginError(e.status === 403 ? '❌ كلمة السر غلط' : '⚠️ ' + errMsg(e));
+  }
+  btn.disabled = false; btn.textContent = '🔓 دخول';
+}
+
+function enter(summary) {
+  $('secret-input').value = '';
+  $('login-screen').hidden = true;
+  $('app').hidden = false;
+  renderOverview(summary);
+  renderUsers(summary);
+  loaded.overview = true; loaded.users = true;
+  showTab('overview');
+}
+
+function lock(msg) {
+  secret = ''; loaded = {};
+  ['stat-grid', 'users-body', 'questions-body', 'complaints-body', 'feedback-body'].forEach(function (id) { $(id).textContent = ''; });
+  $('app').hidden = true;
+  $('login-screen').hidden = false;
+  $('login-error').hidden = true;
+  if (typeof msg === 'string' && msg) showLoginError(msg);
+}
+
+/* ───────────────────────── التابات والتحميل ───────────────────────── */
+function showTab(name) {
+  currentTab = name;
+  document.querySelectorAll('.tab-btn').forEach(function (b) {
+    var on = b.getAttribute('data-tab') === name;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  document.querySelectorAll('.tab-pane').forEach(function (p) { p.hidden = p.id !== 'tab-' + name; });
+  $('csv-btn').hidden = name === 'overview'; // مفيش جداول في النظرة العامة
+  if (!loaded[name]) loadTab(name);
+}
+
+function setStatus(name, html, isError, retry) {
+  var box = $('status-' + name);
+  box.textContent = '';
+  if (!html) { box.hidden = true; return; }
+  if (isError) {
+    box.className = 'alert-error';
+    box.appendChild(document.createTextNode('⚠️ ' + html));
+    var b = el('button', {class: 'ghost-btn', text: 'إعادة المحاولة'});
+    b.onclick = retry;
+    box.appendChild(b);
+  } else {
+    box.className = 'status';
+    box.appendChild(el('span', {class: 'spinner'}));
+    box.appendChild(document.createTextNode(html));
+  }
+  box.hidden = false;
+}
+
+async function loadTab(name) {
+  $('refresh-btn').disabled = true;
+  setStatus(name, 'جاري التحميل...', false);
+  try {
+    if (name === 'overview' || name === 'users') {
+      var s = await api('/dash/summary');
+      renderOverview(s); renderUsers(s);
+      loaded.overview = true; loaded.users = true;
+      setStatus('overview', ''); setStatus('users', '');
+    } else if (name === 'topics') {
+      renderTopics(await api('/dash/topics')); loaded.topics = true; setStatus(name, '');
+    } else if (name === 'questions') {
+      renderQuestions(await api('/dash/questions')); loaded.questions = true; setStatus(name, '');
+    } else if (name === 'complaints') {
+      renderComplaints((await api('/dash/complaints')).complaints); loaded.complaints = true; setStatus(name, '');
+    } else if (name === 'feedback') {
+      renderFeedback((await api('/dash/feedback')).feedback); loaded.feedback = true; setStatus(name, '');
+    }
+  } catch (e) {
+    if (e.status === 403) { lock('كلمة السر غلط أو اتغيّرت — سجّل الدخول تاني'); }
+    else { setStatus(name, errMsg(e), true, function () { loadTab(name); }); }
+  }
+  $('refresh-btn').disabled = false;
+}
+
+function refresh() { loadTab(currentTab); }
+
+/* ───────────────────────── الرسم والعرض ───────────────────────── */
+function emptyBox(msg) { return el('div', {class: 'empty', text: msg}); }
+
+// headers: [string]; rows: [[string | Node | cell()]]; title: اسم الجدول (بيظهر في ملف الـ CSV لو فيه أكتر من جدول)
+function table(headers, rows, title) {
+  var thead = el('thead', {}, [el('tr', {}, headers.map(function (h) { return el('th', {text: h}); }))]);
+  var tbody = el('tbody', {}, rows.map(function (r) {
+    return el('tr', {}, r.map(function (c) {
+      if (c && c.nodeType) return el('td', {}, [c]);                        // عنصر DOM جاهز (badge / clamp)
+      if (c && typeof c === 'object') return el('td', {class: c.c, text: c.t}); // خلية بكلاس (num / ts)
+      return el('td', {text: c == null ? '' : String(c)});
+    }));
+  }));
+  return el('div', {class: 'table-wrap', 'data-title': title || ''}, [el('table', {class: 'data-table'}, [thead, tbody])]);
+}
+function clamp(text) { return el('div', {class: 'clamp', title: text || '', text: text || ''}); }
+function badge(cls, text) { return el('span', {class: 'badge ' + cls, text: text}); }
+function cell(cls, text) { return {c: cls, t: text}; }
+
+function renderOverview(d) {
+  var cards = [
+    ['users_total', '👥', 'إجمالي الحسابات', fmtNum(d.users_total)],
+    ['students_total', '🎓', 'الطلاب', fmtNum(d.students_total)],
+    ['questions', '❓', 'أسئلة الطلاب', fmtNum(d.questions)],
+    ['messages', '💬', 'إجمالي الرسائل (أسئلة + ردود)', fmtNum(d.messages)],
+    ['messages_linked', '🔗', 'رسائل مرتبطة بحساب', fmtNum(d.messages_linked)],
+    ['sessions', '🗂️', 'عدد الجلسات', fmtNum(d.sessions)],
+    ['satisfaction', '⭐', 'نسبة الرضا', d.satisfaction],
+    ['complaints', '📢', 'شكاوى مفتوحة / إجمالي', d.complaints_open + ' / ' + d.complaints_total],
+    ['feedback', '👍', 'تقييمات مفيد / غير مفيد', d.feedback_good + ' / ' + d.feedback_bad],
+    ['pinecone', '📡', 'Pinecone', d.pinecone]
+  ];
+  var grid = $('stat-grid');
+  grid.textContent = '';
+  cards.forEach(function (c) {
+    grid.appendChild(el('div', {class: 'stat-card', 'data-key': c[0]}, [
+      el('div', {class: 'val' + (c[0] === 'pinecone' ? ' small' : ''), text: String(c[3])}),
+      el('div', {class: 'lbl', text: c[1] + ' ' + c[2]})
+    ]));
+  });
+  drawCharts(d);
+}
+
+// رسوم SVG مبنية يدويًا بدل Chart.js — مفيش أي طلب لأي حاجة خارجية (CDN)، فمفيش
+// حالة فشل تحميل ممكن تحصل من الأساس. البيانات هنا أرقام/تواريخ بس (من الباك
+// اند) مش نص المستخدمين، فبناء الـ SVG كـ string وحقنه بـ innerHTML آمن هنا —
+// عكس الجداول اللي بتستخدم textContent لأي نص جاي من مستخدمين حقيقيين.
+function svgPath(pts) {
+  return pts.map(function (p, i) { return (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ');
+}
+
+function renderTrendChart(days) {
+  var W = 560, H = 220, padL = 30, padR = 18, padT = 14, padB = 22;
+  var innerW = W - padL - padR, innerH = H - padT - padB;
+  var n = days.length || 1;
+  var maxC = Math.max(1, Math.max.apply(null, days.map(function (r) { return r.count; })));
+  var pts = days.map(function (r, i) {
+    var x = padL + (n === 1 ? innerW / 2 : (innerW * i) / (n - 1));
+    var y = padT + innerH - (r.count / maxC) * innerH;
+    return [x, y];
+  });
+  var linePath = svgPath(pts);
+  var baseline = padT + innerH;
+  var areaPath = pts.length
+    ? linePath + ' L' + pts[pts.length - 1][0].toFixed(1) + ',' + baseline + ' L' + pts[0][0].toFixed(1) + ',' + baseline + ' Z'
+    : '';
+  var grid = [0, .5, 1].map(function (f) {
+    var y = (padT + innerH * f).toFixed(1);
+    return '<line x1="' + padL + '" y1="' + y + '" x2="' + (W - padR) + '" y2="' + y + '" stroke="#243447" stroke-width="1"/>';
+  }).join('');
+  var yLabels =
+    '<text x="' + (padL - 6) + '" y="' + (padT + 4) + '" text-anchor="end" font-size="9" fill="#64748b">' + maxC + '</text>' +
+    '<text x="' + (padL - 6) + '" y="' + (baseline + 4) + '" text-anchor="end" font-size="9" fill="#64748b">0</text>';
+  var tickIdx = n <= 5
+    ? days.map(function (_, i) { return i; })
+    : [0, Math.round((n - 1) * .25), Math.round((n - 1) * .5), Math.round((n - 1) * .75), n - 1];
+  var xLabels = tickIdx.map(function (i) {
+    return '<text x="' + pts[i][0].toFixed(1) + '" y="' + (H - 4) + '" text-anchor="middle" font-size="9" fill="#64748b">' + days[i].date.slice(5) + '</text>';
+  }).join('');
+  var dots = pts.map(function (p) {
+    return '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="2.5" fill="#14b8a6"/>';
+  }).join('');
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" style="width:100%;height:100%">' +
+    grid + yLabels +
+    (areaPath ? '<path d="' + areaPath + '" fill="rgba(20,184,166,.14)" stroke="none"/>' : '') +
+    '<path d="' + linePath + '" fill="none" stroke="#14b8a6" stroke-width="2"/>' +
+    dots + xLabels + '</svg>';
+}
+
+function renderFeedbackDonut(good, bad) {
+  var total = good + bad;
+  var W = 200, H = 190, cx = W / 2, cy = 86, r = 62, sw = 22;
+  var circ = 2 * Math.PI * r;
+  var svg;
+  if (!total) {
+    svg = '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#243447" stroke-width="' + sw + '"/>' +
+          '<text x="' + cx + '" y="' + cy + '" text-anchor="middle" dominant-baseline="middle" font-size="12" fill="#64748b">لا توجد تقييمات</text>';
+  } else {
+    var goodLen = circ * (good / total);
+    svg =
+      '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#ef4444" stroke-width="' + sw + '" ' +
+      'transform="rotate(-90 ' + cx + ' ' + cy + ')"/>' +
+      '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#22c55e" stroke-width="' + sw + '" ' +
+      'stroke-dasharray="' + goodLen.toFixed(1) + ' ' + (circ - goodLen).toFixed(1) + '" ' +
+      'transform="rotate(-90 ' + cx + ' ' + cy + ')"/>' +
+      '<text x="' + cx + '" y="' + (cy - 4) + '" text-anchor="middle" font-size="20" font-weight="900" fill="#e2e8f0">' +
+        Math.round((good / total) * 100) + '%</text>' +
+      '<text x="' + cx + '" y="' + (cy + 14) + '" text-anchor="middle" font-size="9" fill="#64748b">إجابات مفيدة</text>';
+  }
+  var legend = total
+    ? '<div style="display:flex;gap:14px;justify-content:center;margin-top:4px;font-size:.72rem;color:#94a3b8">' +
+      '<span>🟢 مفيد: ' + fmtNum(good) + '</span><span>🔴 غير مفيد: ' + fmtNum(bad) + '</span></div>'
+    : '';
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:' + (H - 30) + 'px">' + svg + '</svg>' + legend;
+}
+
+function drawCharts(d) {
+  $('chart-trend').innerHTML = renderTrendChart(d.questions_by_day);
+  $('chart-feedback').innerHTML = renderFeedbackDonut(d.feedback_good || 0, d.feedback_bad || 0);
+}
+
+function renderUsers(d) {
+  var body = $('users-body');
+  body.textContent = '';
+  if (!d.users.length) { body.appendChild(emptyBox('لا يوجد مستخدمون بعد')); return; }
+  body.appendChild(table(
+    ['#', 'اسم المستخدم', 'تاريخ الانضمام', 'عدد الأسئلة', 'آخر نشاط'],
+    d.users.map(function (u, i) {
+      return [String(i + 1), u.username, cell('ts', fmtTs(u.joined)), cell('num', String(u.messages)), cell('ts', fmtTs(u.last_active))];
+    }), 'المستخدمون'));
+}
+
+function renderTopics(d) {
+  var body = $('topics-body');
+  body.textContent = '';
+
+  var cards = [
+    ['📝', 'امتحانات تم توليدها', fmtNum(d.quiz_summary.total_exams_generated)],
+    ['✅', 'محاولات إجابة', fmtNum(d.quiz_summary.total_attempts)],
+    ['🎯', 'نسبة الإجابات الصحيحة', d.quiz_summary.overall_accuracy],
+    ['📚', 'أسئلة بدون سياق من المنهج', d.content_gap_rate],
+    ['⏱️', 'متوسط امتداد الجلسة (أول ← آخر رسالة)', d.avg_session_span_minutes ? d.avg_session_span_minutes + ' دقيقة' : '—'],
+    ['🛠️', 'أخطاء استرجاع المنهج', fmtNum(d.retrieval_errors)],
+    ['⚠️', 'أخطاء الشات (LLM)', fmtNum(d.chat_errors)],
+  ];
+  var grid = el('div', {class: 'stat-grid'});
+  cards.forEach(function (c) {
+    grid.appendChild(el('div', {class: 'stat-card'}, [
+      el('div', {class: 'val', text: String(c[2])}),
+      el('div', {class: 'lbl', text: c[0] + ' ' + c[1]})
+    ]));
+  });
+  body.appendChild(grid);
+
+  var FEATURE_LABELS = {chat: '💬 رسائل شات', exam: '📝 امتحانات', grade: '📊 تقييم إجابات',
+                         pdf: '📄 تحليل ملفات', complaint: '📢 شكاوى'};
+  body.appendChild(el('h3', {class: 'sec-title', text: '⚙️ استخدام الميزات'}));
+  var usageGrid = el('div', {class: 'stat-grid'});
+  Object.keys(FEATURE_LABELS).forEach(function (k) {
+    usageGrid.appendChild(el('div', {class: 'stat-card'}, [
+      el('div', {class: 'val', text: fmtNum(d.feature_usage[k] || 0)}),
+      el('div', {class: 'lbl', text: FEATURE_LABELS[k]})
+    ]));
+  });
+  body.appendChild(usageGrid);
+
+  body.appendChild(el('h3', {class: 'sec-title', text: '🔥 الموضوعات الأكثر طلبًا (توليد امتحانات)'}));
+  if (!d.most_requested_topics.length) {
+    body.appendChild(emptyBox('لا توجد امتحانات كافية بعد'));
+  } else {
+    body.appendChild(table(['#', 'الموضوع', 'عدد مرات الطلب'],
+      d.most_requested_topics.map(function (t, i) { return [String(i + 1), t.topic, cell('num', String(t.count))]; }),
+      'الموضوعات الأكثر طلبًا'));
+  }
+
+  body.appendChild(el('h3', {class: 'sec-title', text: '⚠️ أضعف الموضوعات (حسب أداء الطلاب في الاختبارات)'}));
+  if (!d.weak_topics.length) {
+    body.appendChild(emptyBox('لا توجد بيانات كافية بعد'));
+  } else {
+    body.appendChild(table(['#', 'الموضوع', 'محاولات', 'إجابات صحيحة', 'نسبة النجاح'],
+      d.weak_topics.map(function (t, i) {
+        return [String(i + 1), t.topic, cell('num', String(t.attempts)), cell('num', String(t.correct)),
+                badge(t.accuracy < 60 ? 'bad' : 'good', t.accuracy + '%')];
+      }), 'أضعف الموضوعات'));
+  }
+
+  body.appendChild(el('h3', {class: 'sec-title', text: '❌ الأسئلة الأكثر غلطًا (مفاهيم يبدو إنها مش واضحة)'}));
+  body.appendChild(questionsTable(d.hardest_questions, 'الأسئلة الأكثر غلطًا'));
+}
+
+function questionsTable(items, title) {
+  if (!items || !items.length) return emptyBox('لا توجد بيانات كافية بعد');
+  return table(['#', 'التكرار', 'السؤال'],
+    items.map(function (it, i) { return [String(i + 1), it.count + '×', clamp(it.example)]; }), title);
+}
+function renderQuestions(d) {
+  var body = $('questions-body');
+  body.textContent = '';
+  body.appendChild(el('h3', {class: 'sec-title', text: '📈 الأكثر تكرارًا — آخر 7 أيام'}));
+  body.appendChild(questionsTable(d.top_recent_7d, 'آخر 7 أيام'));
+  body.appendChild(el('h3', {class: 'sec-title', text: '🗂️ الأكثر تكرارًا — من البداية (إجمالي ' + d.total_questions + ' سؤال)'}));
+  body.appendChild(questionsTable(d.top_all_time, 'من البداية'));
+}
+
+function renderComplaints(rows) {
+  var body = $('complaints-body');
+  body.textContent = '';
+  if (!rows.length) { body.appendChild(emptyBox('لا توجد شكاوى')); return; }
+  body.appendChild(table(
+    ['#', 'الفئة', 'الأولوية', 'الحالة', 'المستخدم', 'النص', 'التاريخ'],
+    rows.map(function (r) {
+      return [String(r.id), badge('cat-' + r.category, r.category), badge('pri-' + r.priority, r.priority),
+              r.status, r.user || '—', clamp(r.text), cell('ts', fmtTs(r.ts))];
+    }), 'الشكاوى'));
+}
+
+function renderFeedback(rows) {
+  var body = $('feedback-body');
+  body.textContent = '';
+  if (!rows.length) { body.appendChild(emptyBox('لا توجد تقييمات')); return; }
+  body.appendChild(table(
+    ['التقييم', 'المستخدم', 'السؤال', 'الإجابة', 'التاريخ'],
+    rows.map(function (r) {
+      var good = r.rating === 'good';
+      return [badge(good ? 'good' : 'bad', good ? '👍 مفيد' : '👎 غير مفيد'), r.user || '—',
+              clamp(r.question), clamp(r.answer), cell('ts', fmtTs(r.ts))];
+    }), 'التقييمات'));
+}
+
+/* ───────────────────────── تصدير CSV (من جانب المتصفح) ───────────────────────── */
+// بيجمع كل الجداول الظاهرة في التاب الحالي من الـ DOM — من غير أي endpoint إضافي.
+function csvCell(v) {
+  var s = String(v == null ? '' : v).replace(/\r\n?/g, '\n').trim();
+  // حماية من CSV/formula injection: نص المستخدمين ممكن يبدأ بـ = + - @ فيتنفّذ كمعادلة في Excel
+  if (/^[=+\-@\t]/.test(s)) s = "'" + s;
+  if (/[",\n]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
+  return s;
+}
+
+function tableToLines(wrap) {
+  return Array.prototype.map.call(wrap.querySelectorAll('tr'), function (tr) {
+    return Array.prototype.map.call(tr.children, function (c) { return csvCell(c.textContent); }).join(',');
+  });
+}
+
+function flashNote(msg) {
+  var n = $('toolbar-note');
+  n.textContent = msg; n.hidden = false;
+  clearTimeout(noteTimer);
+  noteTimer = setTimeout(function () { n.hidden = true; }, 2500);
+}
+
+function exportCsv() {
+  var pane = $('tab-' + currentTab);
+  var wraps = Array.prototype.slice.call(pane.querySelectorAll('.table-wrap'));
+  if (!wraps.length) { flashNote('مفيش جدول للتصدير في التاب ده'); return; }
+  var lines = [];
+  wraps.forEach(function (w, idx) {
+    if (wraps.length > 1) {
+      if (idx) lines.push('');
+      lines.push(csvCell(w.getAttribute('data-title') || ''));
+    }
+    lines = lines.concat(tableToLines(w));
+  });
+  // BOM عشان Excel يفتح الحروف العربية UTF-8 صح
+  var blob = new Blob(['\uFEFF' + lines.join('\r\n') + '\r\n'], {type: 'text/csv;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = el('a', {href: url, download: 'edtech-' + currentTab + '-' + new Date().toISOString().slice(0, 10) + '.csv'});
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  flashNote('✅ تم تصدير الملف');
+}
+
+$('secret-input').focus();
+</script>
+</body>
+</html>

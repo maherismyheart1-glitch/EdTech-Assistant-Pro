@@ -1,0 +1,3 @@
+PyMuPDF==1.24.5
+pinecone==3.2.2
+google-genai==0.7.0
